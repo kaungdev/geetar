@@ -4,12 +4,32 @@ const BuyItem = mongoose.model("buyItems");
 const BuyVoucher = mongoose.model("buyVouchers");
 const uri = "/api/buy_vouchers";
 
+const BUY_ITEM_FOUND_STATUS = {
+  status: "success",
+  message: "Buy items found."
+};
+const ITEM_NOT_FOUND_STATUS = {
+  status: "fail",
+  message: "Item not found."
+};
+const FAIL_TO_CREATE_NEW_ITEM_STATUS = {
+  status: "fail",
+  message: "Failed to create new item"
+};
+const NEW_VOUCHER_CREATED_STATUS = {
+  status: "success",
+  message: "New buy voucher created."
+};
+const EMPTY_STATUS = {
+  status: "fail",
+  message: "Empty request"
+};
+
 module.exports = app => {
   app.get(uri, async (req, res) => {
     const buyItems = await BuyItem.find({});
     res.json({
-      status: "success",
-      message: "Buy items found.",
+      ...BUY_ITEM_FOUND_STATUS,
       buyItems
     });
   });
@@ -20,6 +40,10 @@ module.exports = app => {
     let voucherTotalPrice = 0;
 
     const { buyItems } = req.body;
+    if (!buyItems && buyItems.length !== 0) {
+      return res.json({ ...EMPTY_STATUS });
+    }
+
     for (const buyItem of buyItems) {
       const { _id, quantity, itemBuyPrice } = buyItem;
 
@@ -27,8 +51,7 @@ module.exports = app => {
 
       if (!foundItem) {
         return res.json({
-          status: "fail",
-          message: "Item not found."
+          ...ITEM_NOT_FOUND_STATUS
         });
       }
 
@@ -54,16 +77,14 @@ module.exports = app => {
       newBuyVoucher.save();
     } catch (error) {
       res.json({
-        status: "fail",
-        message: "Failed to create new item",
+        ...FAIL_TO_CREATE_NEW_ITEM_STATUS,
         error
       });
     }
 
     return res.json({
-      status: "success",
-      message: "New buy voucher created.",
       data: {
+        ...NEW_VOUCHER_CREATED_STATUS,
         buyVoucher: newBuyVoucher
       }
     });
