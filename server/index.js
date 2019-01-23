@@ -23,6 +23,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 
 require("./routes/item_categories")(app);
+require("./routes/items")(app);
 
 app.get("/health_check", (req, res) => {
   res.json({ status: "success", message: "im fine" });
