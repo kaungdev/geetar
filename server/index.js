@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 require("./routes/item_categories")(app);
 require("./routes/items")(app);
 require("./routes/sell_items")(app);
-require("./routes/buy_items")(app);
+require("./routes/buy_vouchers")(app);
 
 app.get("/health_check", (req, res) => {
   res.json({ status: "success", message: "im fine" });
