@@ -12,8 +12,17 @@ mongoose.connect(
   { useNewUrlParser: true }
 );
 
+require("./models/BuyItem");
+require("./models/BuyVoucher");
+require("./models/Item");
+require("./models/ItemCategory");
+require("./models/SellItem");
+require("./models/SellVoucher");
+
 app.use(morgan("dev"));
 app.use(bodyParser.json());
+
+require("./routes/item_categories")(app);
 
 app.get("/health_check", (req, res) => {
   res.json({ status: "success", message: "im fine" });
