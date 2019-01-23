@@ -4,8 +4,9 @@ const { Schema } = mongoose;
 const itemSchema = new Schema({
   name: String,
   itemCategory: { type: Schema.Types.ObjectId, ref: "itemCategories" },
-  itemPrice: { type: Number, default: 0 },
+  itemSellPrice: { type: Number, default: 0 },
   stockQuantity: { type: Number, default: 0 },
+  isDeleted: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now() }
 });
 

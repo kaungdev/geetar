@@ -4,9 +4,9 @@ const { Schema } = mongoose;
 const buyItemSchema = new Schema({
   item: { type: Schema.Types.ObjectId, ref: "items" },
   buyVoucher: { type: Schema.Types.ObjectId, ref: "buyVouchers" },
-  itemPrice: Number,
+  itemBuyPrice: Number,
   quantity: Number,
-  totalPrice: Number,
+  itemBuyTotalPrice: Number,
   createdAt: { type: Date, default: Date.now() }
 });
 
