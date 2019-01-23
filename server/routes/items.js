@@ -5,7 +5,7 @@ const uri = "/api/items";
 
 module.exports = app => {
   app.post(uri, async (req, res) => {
-    const { name, itemCategory, itemPrice } = req.body.item;
+    const { name, itemCategory, itemSellPrice } = req.body.item;
 
     const foundItemCategory = await ItemCategory.findById(itemCategory);
 
@@ -16,7 +16,7 @@ module.exports = app => {
     const createdItem = await new Item({
       name,
       itemCategory: foundItemCategory,
-      itemPrice
+      itemSellPrice
     }).save();
 
     foundItemCategory.items.push(createdItem);

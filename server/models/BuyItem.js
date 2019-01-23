@@ -6,8 +6,11 @@ const buyItemSchema = new Schema({
   buyVoucher: { type: Schema.Types.ObjectId, ref: "buyVouchers" },
   itemPrice: Number,
   quantity: Number,
-  totalPrice: Number,
   createdAt: { type: Date, default: Date.now() }
+});
+
+buyItemSchema.virtual("totalPrice").get(function() {
+  return this.itemPrice * this.quantity;
 });
 
 mongoose.model("buyItems", buyItemSchema);
