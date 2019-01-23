@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const moment = require("moment");
 const Item = mongoose.model("items");
-const ItemCategory = mongoose.model("itemCategories");
 const BuyItem = mongoose.model("buyItems");
 const BuyVoucher = mongoose.model("buyVouchers");
 const uri = "/api/buy_items";
@@ -36,7 +34,7 @@ module.exports = app => {
 
       const newBuyItem = new BuyItem({
         item: foundItem,
-        buyVoucher,
+        newBuyVoucher,
         itemBuyPrice,
         quantity,
         itemBuyTotalPrice: quantity * itemBuyPrice
@@ -47,6 +45,7 @@ module.exports = app => {
     }
 
     newBuyVoucher.totalPrice = voucherTotalPrice;
+    newBuyVoucher.buyItems = newBuyItems;
 
     try {
       for (const buyItem of newBuyItems) {
@@ -60,5 +59,13 @@ module.exports = app => {
         error
       });
     }
+
+    return res.json({
+      status: "success",
+      message: "New buy voucher created.",
+      data: {
+        buyVoucher: newBuyVoucher
+      }
+    });
   });
 };
