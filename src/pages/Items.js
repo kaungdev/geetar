@@ -4,10 +4,8 @@ import Grid from "@material-ui/core/Grid";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import ReactTable from "react-table";
 import MenuItem from "@material-ui/core/MenuItem";
 import api from "../utitlites/api";
 
@@ -16,12 +14,18 @@ export class BuyVouchers extends Component {
     newItemName: "",
     newItemCategoryId: "",
     newItemSellPrice: 0,
-
+    isLoading: false,
     isSnackBarOpen: false,
     categories: [],
     items: [],
-
     snackBarMessage: ""
+  };
+
+  handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    this.setState({ isSnackBarOpen: false });
   };
 
   handleChange = name => event => {
@@ -31,8 +35,12 @@ export class BuyVouchers extends Component {
   };
 
   async componentDidMount() {
-    const { data } = await api.getItemCategories();
-    this.setState({ categories: data.expectedData.categories });
+    const categoriesResponse = await api.getItemCategories();
+    const itemsResponse = await api.getItems();
+    this.setState({
+      categories: categoriesResponse.data.expectedData.categories,
+      items: itemsResponse.data.expectedData.items
+    });
   }
 
   createNewItem = async event => {
@@ -45,9 +53,15 @@ export class BuyVouchers extends Component {
     if (!name || !itemCategory || !itemSellPrice) return;
 
     const payload = { item: { name, itemCategory, itemSellPrice } };
+    this.setState({ isLoading: true });
     const { data } = await api.postItems(payload);
-    const { expectedData } = data;
-    console.log("​BuyVouchers -> expectedData", expectedData);
+    const { expectedData, message } = data;
+    this.setState({
+      snackBarMessage: message,
+      isSnackBarOpen: true,
+      isLoading: false,
+      items: expectedData.items
+    });
   };
 
   render() {
@@ -55,7 +69,7 @@ export class BuyVouchers extends Component {
       <div>
         <form noValidate onSubmit={this.createNewItem}>
           <Grid container direction="row-reverse" alignItems="center">
-            <Grid item>
+            <Grid item xs={2}>
               <Button
                 variant="contained"
                 style={{ backgroundColor: "#8bc34a" }}
@@ -67,7 +81,7 @@ export class BuyVouchers extends Component {
 
             <Grid item xs={1} />
 
-            <Grid item>
+            <Grid item xs={2}>
               <TextField
                 id="newItemSellPrice"
                 label="Item Sell Price"
@@ -79,14 +93,14 @@ export class BuyVouchers extends Component {
 
             <Grid item xs={1} />
 
-            <Grid item>
+            <Grid item xs={2}>
               <TextField
                 value={this.state.newItemCategoryId}
                 id="categorySelector"
                 select
                 variant="outlined"
                 onChange={this.handleChange("newItemCategoryId")}
-                style={{ width: 200 }}
+                style={{ width: "100%" }}
               >
                 {this.state.categories.map(category => (
                   <MenuItem key={category._id} value={category._id}>
@@ -98,7 +112,7 @@ export class BuyVouchers extends Component {
 
             <Grid item xs={1} />
 
-            <Grid item>
+            <Grid item xs={2}>
               <TextField
                 id="newItemName"
                 label="Item Name"
@@ -111,10 +125,47 @@ export class BuyVouchers extends Component {
         </form>
         <Grid container>
           <Grid item xs={12} style={{ paddingTop: 30, paddingBottom: 30 }}>
-            <LinearProgress />
+            {this.state.isLoading && <LinearProgress />}
             <Divider />
           </Grid>
         </Grid>
+
+        <Grid container>
+          <Grid item xs={12}>
+            <ReactTable
+              data={this.state.items}
+              columns={[
+                {
+                  Header: "Item Name",
+                  accessor: "name"
+                },
+                {
+                  Header: "Item Category",
+                  id: "_id",
+                  accessor: d => d.itemCategory.name
+                },
+                {
+                  Header: "Item Sell Price",
+                  accessor: "itemSellPrice"
+                },
+                {
+                  Header: "Stock Left",
+                  accessor: "stockQuantity"
+                }
+              ]}
+            />
+          </Grid>
+        </Grid>
+        <Snackbar
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right"
+          }}
+          open={this.state.isSnackBarOpen}
+          autoHideDuration={3000}
+          onClose={this.handleClose}
+          message={<span>{this.state.snackBarMessage}</span>}
+        />
       </div>
     );
   }

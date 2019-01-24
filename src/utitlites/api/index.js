@@ -6,5 +6,6 @@ const items_url = domain + "/api/items";
 export default {
   postItemCategories: payload => axios.post(item_categories_url, payload),
   getItemCategories: () => axios.get(item_categories_url),
-  postItems: payload => axios.post(items_url, payload)
+  postItems: payload => axios.post(items_url, payload),
+  getItems: () => axios.get(items_url)
 };

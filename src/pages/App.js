@@ -5,23 +5,26 @@ import Grid from "@material-ui/core/Grid";
 
 import Categories from "./Categories";
 import Items from "./Items";
+import BuyVouchers from "./BuyVouchers";
 
-import AppBar from "../components/App/AppBar";
+import MyAppBar from "../components/App/AppBar";
 
 class App extends Component {
   render() {
     return (
       <BrowserRouter>
         <div>
-          <AppBar />
+          <MyAppBar />
           <Grid container>
             <Grid item xs={1} />
             <Grid item xs={10}>
               <Route exact path="/categories" component={Categories} />
               <Route exact path="/items" component={Items} />
+              <Route exact path="/buy_vouchers" component={BuyVouchers} />
             </Grid>
             <Grid item xs={1} />
           </Grid>
+          <div style={{ height: 50 }} />
         </div>
       </BrowserRouter>
     );

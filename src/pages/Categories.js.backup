@@ -4,8 +4,28 @@ import Grid from "@material-ui/core/Grid";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
 import ReactTable from "react-table";
+import "react-table/react-table.css";
 import api from "../utitlites/api";
+
+const RenderCategories = ({ categories }) => {
+  if (!categories || categories.length === 0) return <div>Loading...</div>;
+  return categories.map((category, index) => (
+    <Grid item xs={3} key={index}>
+      <Card>
+        <CardContent>
+          {category.name}
+          <Typography component="p">
+            items count: {category.items.length}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Grid>
+  ));
+};
 
 class Categories extends Component {
   state = {
@@ -95,6 +115,21 @@ class Categories extends Component {
                   Header: "Item Counts",
                   id: "_id",
                   accessor: d => d.items.length
+                },
+                {
+                  Header: "Actions",
+                  accessor: "name",
+                  Cell: row => (
+                    <div>
+                      <Button onClick={() => console.log(row)}>Edit</Button>
+                      <Button
+                        color="secondary"
+                        onClick={() => console.log(row)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  )
                 }
               ]}
             />
