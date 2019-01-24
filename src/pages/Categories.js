@@ -6,15 +6,20 @@ import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
 import api from "../utitlites/api";
 
 const RenderCategories = ({ categories }) => {
-  console.log("​categories", categories);
   if (!categories || categories.length === 0) return <div>Loading...</div>;
   return categories.map((category, index) => (
     <Grid item xs={3} key={index}>
       <Card>
-        <CardContent>{category.name}</CardContent>
+        <CardContent>
+          {category.name}
+          <Typography component="p">
+            items count: {category.items.length}
+          </Typography>
+        </CardContent>
       </Card>
     </Grid>
   ));

@@ -8,6 +8,7 @@ import reduxThunk from "redux-thunk";
 
 import App from "./pages/App";
 import reducers from "./reducers";
+import "./styles.css";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

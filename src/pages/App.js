@@ -4,6 +4,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 
 import Categories from "./Categories";
+import Items from "./Items";
 
 import AppBar from "../components/App/AppBar";
 
@@ -17,6 +18,7 @@ class App extends Component {
             <Grid item xs={1} />
             <Grid item xs={10}>
               <Route exact path="/categories" component={Categories} />
+              <Route exact path="/items" component={Items} />
             </Grid>
             <Grid item xs={1} />
           </Grid>

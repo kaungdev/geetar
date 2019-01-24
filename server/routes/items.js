@@ -30,12 +30,12 @@ module.exports = app => {
       });
     }
 
+    const items = await Item.find({}).populate("itemCategory");
+
     res.json({
       status: "success",
       message: "New item created successfully",
-      expectedData: {
-        item: createdItem
-      }
+      expectedData: { items }
     });
   });
 
