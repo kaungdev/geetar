@@ -10,8 +10,4 @@ const buyItemSchema = new Schema({
   createdAt: { type: Date, default: Date.now() }
 });
 
-buyItemSchema.virtual("totalPrice").get(function() {
-  return this.itemPrice * this.quantity;
-});
-
 mongoose.model("buyItems", buyItemSchema);
