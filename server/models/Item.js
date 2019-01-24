@@ -6,6 +6,7 @@ const itemSchema = new Schema({
   itemCategory: { type: Schema.Types.ObjectId, ref: "itemCategories" },
   itemSellPrice: { type: Number, default: 0 },
   stockQuantity: { type: Number, default: 0 },
+  isDeleted: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now() }
 });
 

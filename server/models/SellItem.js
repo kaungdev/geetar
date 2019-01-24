@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const sellItemSchema = new Schema({
   item: { type: Schema.Types.ObjectId, ref: "items" },
   sellVoucher: { type: Schema.Types.ObjectId, ref: "sellVouchers" },
-  itemPrice: Number,
+  itemSellPrice: Number,
   quantity: Number,
   totalPrice: Number,
   createdAt: { type: Date, default: Date.now() }

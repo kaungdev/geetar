@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-// item: { type: Schema.Types.ObjectId, ref: "items" },
+const moment = require("moment");
 
 const buyVoucherSchema = new Schema({
   buyItems: [{ type: Schema.Types.ObjectId, ref: "buyItems" }],
   totalPrice: Number,
-  cratedMonth: String,
-  createYear: Number,
+  cratedMonth: { type: String, default: moment(Date.now()).format("MMM") },
+  createYear: { type: String, default: moment(Date.now()).format("YY") },
   createdAt: { type: Date, default: Date.now() }
 });
 
