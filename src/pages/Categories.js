@@ -61,6 +61,7 @@ class Categories extends Component {
                 variant="contained"
                 style={{ backgroundColor: "#8bc34a" }}
                 disabled={!this.state.categoryName}
+                type="submit"
               >
                 Add Category
               </Button>

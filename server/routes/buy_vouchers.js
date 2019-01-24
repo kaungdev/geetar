@@ -27,10 +27,10 @@ const EMPTY_STATUS = {
 
 module.exports = app => {
   app.get(uri, async (req, res) => {
-    const buyItems = await BuyItem.find({});
+    const buyVouchers = await BuyVoucher.find({}).populate("buyItems");
     res.json({
       ...BUY_ITEM_FOUND_STATUS,
-      buyItems
+      buyVouchers
     });
   });
 
@@ -82,10 +82,12 @@ module.exports = app => {
       });
     }
 
+    const buyVouchers = await BuyVoucher.find({}).populate("buyItems");
+
     return res.json({
       expectedData: {
         ...NEW_VOUCHER_CREATED_STATUS,
-        buyVoucher: newBuyVoucher
+        buyVouchers
       }
     });
   });

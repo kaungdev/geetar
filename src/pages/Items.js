@@ -72,8 +72,9 @@ export class BuyVouchers extends Component {
             <Grid item xs={2}>
               <Button
                 variant="contained"
-                style={{ backgroundColor: "#8bc34a" }}
+                style={{ backgroundgolor: "#8bc34a" }}
                 onClick={this.createNewItem}
+                type="submit"
               >
                 Add New Item
               </Button>
@@ -133,6 +134,7 @@ export class BuyVouchers extends Component {
         <Grid container>
           <Grid item xs={12}>
             <ReactTable
+              expandedRows
               data={this.state.items}
               columns={[
                 {
