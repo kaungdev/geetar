@@ -83,7 +83,7 @@ module.exports = app => {
     }
 
     return res.json({
-      data: {
+      expectedData: {
         ...NEW_VOUCHER_CREATED_STATUS,
         buyVoucher: newBuyVoucher
       }

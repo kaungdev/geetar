@@ -2,16 +2,25 @@ const mongoose = require("mongoose");
 const ItemCategory = mongoose.model("itemCategories");
 
 const uri = "/api/item_categories";
+const CATEGORY_ALREADY_EXISTED_STATUS = {
+  status: "fail",
+  message: "Category name already existed."
+};
 
 module.exports = app => {
   app.post(uri, async (req, res) => {
     const { name } = req.body.category;
-    const createdItemCategory = await new ItemCategory({ name }).save();
+    const foundCategory = await ItemCategory.find({ name });
+    if (foundCategory.length !== 0) {
+      return res.json(CATEGORY_ALREADY_EXISTED_STATUS);
+    }
+    await new ItemCategory({ name }).save();
+    const allCategories = await ItemCategory.find({});
     res.json({
       status: "success",
       message: "New category created.",
-      data: {
-        category: createdItemCategory
+      expectedData: {
+        categories: [...allCategories]
       }
     });
   });
@@ -21,7 +30,7 @@ module.exports = app => {
     res.json({
       status: "success",
       message: "Categories found.",
-      data: {
+      expectedData: {
         categories
       }
     });

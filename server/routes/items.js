@@ -33,7 +33,7 @@ module.exports = app => {
     res.json({
       status: "success",
       message: "New item created successfully",
-      data: {
+      expectedData: {
         item: createdItem
       }
     });
@@ -45,7 +45,7 @@ module.exports = app => {
     res.json({
       status: "success",
       message: "New item created successfully",
-      data: {
+      expectedData: {
         items
       }
     });
