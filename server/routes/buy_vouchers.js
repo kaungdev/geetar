@@ -37,6 +37,7 @@ module.exports = app => {
   app.post(uri, async (req, res) => {
     const newBuyVoucher = new BuyVoucher({});
     const newBuyItems = [];
+    const foundItems = [];
     let voucherTotalPrice = 0;
 
     const { buyItems } = req.body;
@@ -55,6 +56,8 @@ module.exports = app => {
         });
       }
 
+      foundItem.stockQuantity += quantity;
+
       const newBuyItem = new BuyItem({
         item: foundItem,
         newBuyVoucher,
@@ -65,6 +68,7 @@ module.exports = app => {
 
       voucherTotalPrice += quantity * itemBuyPrice;
       newBuyItems.push(newBuyItem);
+      foundItems.push(foundItem);
     }
 
     newBuyVoucher.totalPrice = voucherTotalPrice;
@@ -73,6 +77,9 @@ module.exports = app => {
     try {
       for (const buyItem of newBuyItems) {
         await buyItem.save();
+      }
+      for (const foundItem of foundItems) {
+        await foundItem.save();
       }
       newBuyVoucher.save();
     } catch (error) {
