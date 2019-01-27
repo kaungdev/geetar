@@ -6,7 +6,7 @@ const sellItemSchema = new Schema({
   sellVoucher: { type: Schema.Types.ObjectId, ref: "sellVouchers" },
   itemSellPrice: Number,
   quantity: Number,
-  totalPrice: Number,
+  itemSellTotalPrice: Number,
   createdAt: { type: Date, default: Date.now() }
 });
 

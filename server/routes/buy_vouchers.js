@@ -4,9 +4,9 @@ const BuyItem = mongoose.model("buyItems");
 const BuyVoucher = mongoose.model("buyVouchers");
 const uri = "/api/buy_vouchers";
 
-const BUY_ITEM_FOUND_STATUS = {
+const BUY_VOUCHER_FOUND_STATUS = {
   status: "success",
-  message: "Buy items found."
+  message: "Buy vouchers found."
 };
 const ITEM_NOT_FOUND_STATUS = {
   status: "fail",
@@ -29,7 +29,7 @@ module.exports = app => {
   app.get(uri, async (req, res) => {
     const buyVouchers = await BuyVoucher.find({}).populate("buyItems");
     res.json({
-      ...BUY_ITEM_FOUND_STATUS,
+      ...BUY_VOUCHER_FOUND_STATUS,
       buyVouchers
     });
   });
