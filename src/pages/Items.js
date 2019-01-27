@@ -7,7 +7,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import ReactTable from "react-table";
 import MenuItem from "@material-ui/core/MenuItem";
-import api from "../utitlites/api";
+import api from "../utils/api";
 
 export class BuyVouchers extends Component {
   state = {

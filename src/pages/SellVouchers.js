@@ -9,19 +9,19 @@ import Select from "react-select";
 import ReactTable from "react-table";
 import api from "../utils/api";
 
-export class BuyVouchers extends Component {
+export class SellVouchers extends Component {
   state = {
-    itemBuy: "",
-    itemBuyPrice: 0,
-    itemBuyQuantity: 0,
+    itemSell: "",
+    itemSellQuantity: 0,
+    itemSellPrice: 0,
     isLoading: false,
     isSnackBarOpen: false,
     categories: [],
     items: [],
     snackBarMessage: "",
     itemsAutoComplete: [],
-    itemBuys: [],
-    buyVouchers: []
+    itemSells: [],
+    sellVouchers: []
   };
 
   handleClose = (event, reason) => {
@@ -32,8 +32,12 @@ export class BuyVouchers extends Component {
   };
 
   handleAutoComplete = name => value => {
+    const foundItem = this.state.items.find(({ _id }) => {
+      return _id === value.value;
+    });
     this.setState({
-      [name]: value
+      [name]: value,
+      itemSellPrice: foundItem.itemSellPrice
     });
   };
 
@@ -46,8 +50,8 @@ export class BuyVouchers extends Component {
 
   getTotalPrice = () => {
     let totalPrice = 0;
-    this.state.itemBuys.forEach(item => {
-      totalPrice += item.itemBuyQuantity * item.itemBuyPrice;
+    this.state.itemSells.forEach(item => {
+      totalPrice += item.itemSellTotalPrice;
     });
     return totalPrice;
   };
@@ -68,55 +72,59 @@ export class BuyVouchers extends Component {
     });
   }
 
-  createBuyVoucher = async () => {
-    if (this.state.itemBuys.length === 0) return;
-    const buyItems = this.state.itemBuys.map(
-      ({ itemBuyId, itemBuyPrice, itemBuyQuantity }) => ({
-        _id: itemBuyId,
-        quantity: itemBuyQuantity,
-        itemBuyPrice
+  createSellVoucher = async () => {
+    const sellItems = this.state.itemSells.map(
+      ({ itemSellId, itemSellQuantity }) => ({
+        _id: itemSellId,
+        quantity: itemSellQuantity
       })
     );
+
     this.setState({ isLoading: true });
-    const { expectedData } = (await api.postBuyVouchers({ buyItems })).data;
-    const { status, message, buyVouchers } = expectedData;
+
+    const { expectedData } = (await api.postSellVouchers({ sellItems })).data;
+    const { status, message, sellVouchers } = expectedData;
     if (status === "success") {
       this.setState({
         isLoading: false,
         snackBarMessage: message,
         isSnackBarOpen: true,
-        itemBuys: [],
-        buyVouchers,
-        itemBuy: "",
-        itemBuyPrice: 0,
-        itemBuyQuantity: 0
+        itemSells: [],
+        sellVouchers,
+        itemSell: "",
+        itemSellPrice: 0,
+        itemSellQuantity: 0
       });
     }
   };
 
-  createNewBuyItem = async event => {
+  createNewSellItem = async event => {
     event.preventDefault();
 
-    const { itemBuy, itemBuyQuantity, itemBuyPrice } = this.state;
-    if (!itemBuy) return;
-    if (!itemBuy.label || !itemBuy.value || !itemBuyQuantity || !itemBuyPrice) {
+    const { itemSell, itemSellQuantity, itemSellPrice } = this.state;
+    if (!itemSell) return;
+    if (
+      (!itemSell.label || !itemSell.value || !itemSellQuantity, !itemSellPrice)
+    ) {
       return;
     }
 
     this.setState(prevState => {
       return {
-        itemBuys: [
-          ...prevState.itemBuys,
+        itemSells: [
+          ...prevState.itemSells,
           {
-            itemBuyName: prevState.itemBuy.label,
-            itemBuyId: prevState.itemBuy.value,
-            itemBuyQuantity: prevState.itemBuyQuantity,
-            itemBuyPrice: prevState.itemBuyPrice
+            itemSellName: prevState.itemSell.label,
+            itemSellId: prevState.itemSell.value,
+            itemSellQuantity: prevState.itemSellQuantity,
+            itemSellPrice: prevState.itemSellPrice,
+            itemSellTotalPrice:
+              prevState.itemSellPrice * prevState.itemSellQuantity
           }
         ],
-        itemBuy: {},
-        itemBuyPrice: 0,
-        itemBuyQuantity: 0
+        itemSell: {},
+        itemSellQuantity: 0,
+        itemSellPrice: 0
       };
     });
   };
@@ -124,7 +132,7 @@ export class BuyVouchers extends Component {
   render() {
     return (
       <div>
-        <form onSubmit={this.createNewBuyItem}>
+        <form onSubmit={this.createNewSellItem}>
           <Grid container alignItems="center">
             <Grid item xs={3}>
               <Select
@@ -135,8 +143,8 @@ export class BuyVouchers extends Component {
                   }
                 }}
                 options={this.state.itemsAutoComplete}
-                value={this.state.itemBuy}
-                onChange={this.handleAutoComplete("itemBuy")}
+                value={this.state.itemSell}
+                onChange={this.handleAutoComplete("itemSell")}
                 isClearable
               />
             </Grid>
@@ -145,33 +153,21 @@ export class BuyVouchers extends Component {
 
             <Grid item xs={2}>
               <TextField
-                id="itemBuyPrice"
-                label="Item Buy Price"
+                id="itemSellQuantity"
+                label="Item Sell Quantity"
                 variant="outlined"
-                value={this.state.itemBuyPrice}
-                onChange={this.handleChange("itemBuyPrice")}
+                value={this.state.itemSellQuantity}
+                onChange={this.handleChange("itemSellQuantity")}
               />
             </Grid>
 
-            <Grid item xs={1} />
-
-            <Grid item xs={2}>
-              <TextField
-                id="itemBuyQuantity"
-                label="Item Buy Quantity"
-                variant="outlined"
-                value={this.state.itemBuyQuantity}
-                onChange={this.handleChange("itemBuyQuantity")}
-              />
-            </Grid>
-
-            <Grid item xs={1} />
+            <Grid item xs={4} />
 
             <Grid item xs={2}>
               <Button
                 variant="contained"
                 style={{ backgroundColor: "#8bc34a" }}
-                onClick={this.createNewBuyItem}
+                onClick={this.createNewSellItem}
                 type="submit"
               >
                 Submit
@@ -191,16 +187,12 @@ export class BuyVouchers extends Component {
             {
               <ReactTable
                 pageSize={5}
-                data={this.state.itemBuys}
+                data={this.state.itemSells}
                 columns={[
-                  { Header: "Item Name", accessor: "itemBuyName" },
-                  { Header: "Item Quantity", accessor: "itemBuyQuantity" },
-                  { Header: "Item Price", accessor: "itemBuyPrice" },
-                  {
-                    Header: "Total",
-                    id: "_id",
-                    accessor: d => d.itemBuyQuantity * d.itemBuyPrice
-                  }
+                  { Header: "Item Name", accessor: "itemSellName" },
+                  { Header: "Item Quantity", accessor: "itemSellQuantity" },
+                  { Header: "Item Prce", accessor: "itemSellPrice" },
+                  { Header: "Total", accessor: "itemSellTotalPrice" }
                 ]}
               />
             }
@@ -221,9 +213,9 @@ export class BuyVouchers extends Component {
               variant="contained"
               size="large"
               color="primary"
-              onClick={this.createBuyVoucher}
+              onClick={this.createSellVoucher}
             >
-              Submit
+              Check Out
             </Button>
           </Grid>
         </Grid>
@@ -242,4 +234,4 @@ export class BuyVouchers extends Component {
   }
 }
 
-export default BuyVouchers;
+export default SellVouchers;

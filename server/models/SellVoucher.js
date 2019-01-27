@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 // item: { type: Schema.Types.ObjectId, ref: "items" },
 
 const sellVoucherSchema = new Schema({
-  sellItems: [{ type: Schema.Types.ObjectId, ref: "buyItems" }],
+  sellItems: [{ type: Schema.Types.ObjectId, ref: "sellItems" }],
   totalPrice: Number,
   cratedMonth: String,
   createYear: Number,

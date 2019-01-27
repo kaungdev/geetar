@@ -27,7 +27,12 @@ const EMPTY_STATUS = {
 
 module.exports = app => {
   app.get(uri, async (req, res) => {
-    const buyVouchers = await BuyVoucher.find({}).populate("buyItems");
+    const buyVouchers = await BuyVoucher.find({}).populate({
+      path: "buyItems",
+      populate: {
+        path: "item"
+      }
+    });
     res.json({
       ...BUY_VOUCHER_FOUND_STATUS,
       buyVouchers

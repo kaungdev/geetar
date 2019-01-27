@@ -5,7 +5,7 @@ import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import ReactTable from "react-table";
-import api from "../utitlites/api";
+import api from "../utils/api";
 
 class Categories extends Component {
   state = {

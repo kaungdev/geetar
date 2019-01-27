@@ -9,7 +9,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import ReactTable from "react-table";
 import "react-table/react-table.css";
-import api from "../utitlites/api";
+import api from "../utils/api";
 
 const RenderCategories = ({ categories }) => {
   if (!categories || categories.length === 0) return <div>Loading...</div>;

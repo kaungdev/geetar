@@ -27,7 +27,12 @@ const EMPTY_STATUS = {
 
 module.exports = app => {
   app.get(uri, async (req, res) => {
-    const sellVouchers = await SellVoucher.find({}).populate("sellItems");
+    const sellVouchers = await SellVoucher.find({}).populate({
+      path: "sellItems",
+      populate: {
+        path: "item"
+      }
+    });
     res.json({
       ...SELL_VOUCHER_FOUND_STATUS,
       sellVouchers
@@ -70,7 +75,6 @@ module.exports = app => {
       newSellItems.push(newSellItem);
       foundItems.push(foundItem);
     }
-
     newSellVoucher.totalPrice = voucherTotalPrice;
     newSellVoucher.sellItems = newSellItems;
 
@@ -81,7 +85,7 @@ module.exports = app => {
       for (const foundItem of foundItems) {
         await foundItem.save();
       }
-      newSellVoucher.save();
+      await newSellVoucher.save();
     } catch (error) {
       res.json({
         ...FAIL_TO_CREATE_NEW_ITEM_STATUS,
